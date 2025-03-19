@@ -1,0 +1,57 @@
+package relation
+
+import (
+	"context"
+
+	"github.com/hse-telescope/core/internal/repository/models"
+	"github.com/olegdayo/omniconv"
+)
+
+type Repository interface {
+	GetRelation(ctx context.Context, relation_id int) (models.Relation, error)
+	GetGraphRelations(ctx context.Context, graph_id int) ([]models.Relation, error)
+	CreateRelation(ctx context.Context, relation models.Relation) (models.Relation, error)
+	UpdateRelation(ctx context.Context, relation_id int, relation models.Relation) error
+	DeleteRelation(ctx context.Context, relation_id int) error
+}
+
+type Provider struct {
+	repository Repository
+}
+
+func New(repository Repository) Provider {
+	return Provider{
+		repository: repository,
+	}
+}
+
+func (p Provider) GetRelation(ctx context.Context, relation_id int) (Relation, error) {
+	relation, err := p.repository.GetRelation(ctx, relation_id)
+	if err != nil {
+		return Relation{}, err
+	}
+	return DBRelation2ProviderRelation(relation), nil
+}
+
+func (p Provider) GetGraphRelations(ctx context.Context, graph_id int) ([]Relation, error) {
+	relations, err := p.repository.GetGraphRelations(ctx, graph_id)
+	if err != nil {
+		return nil, err
+	}
+	return omniconv.ConvertSlice(relations, DBRelation2ProviderRelation), nil
+}
+
+func (p Provider) CreateRelation(ctx context.Context, relation Relation) (Relation, error) {
+	newrelation, err := p.repository.CreateRelation(ctx, ProviderRelation2DBRelation(relation))
+	return DBRelation2ProviderRelation(newrelation), err
+}
+
+func (p Provider) UpdateRelation(ctx context.Context, relation_id int, relation Relation) error {
+	err := p.repository.UpdateRelation(ctx, relation_id, ProviderRelation2DBRelation(relation))
+	return err
+}
+
+func (p Provider) DeleteRelation(ctx context.Context, relation_id int) error {
+	err := p.repository.DeleteRelation(ctx, relation_id)
+	return err
+}
