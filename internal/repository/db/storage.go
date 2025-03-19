@@ -102,7 +102,7 @@ func (s DB) DeleteGraph(ctx context.Context, graph_id int) error {
 
 func (s DB) UpdateGraph(ctx context.Context, graph_id int, graph models.Graph) error {
 	q := `
-		UPDATE projects
+		UPDATE graphs
         SET project_id = $1, name = $2
         WHERE id = $3
 	`
