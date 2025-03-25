@@ -24,6 +24,11 @@ func (s *Server) createProjectHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	body, err := json.Marshal(newproject)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Something went wrong: " + err.Error()))
+		return
+	}
 	w.Write(body)
 	w.WriteHeader(http.StatusOK)
 }
