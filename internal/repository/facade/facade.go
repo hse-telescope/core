@@ -22,6 +22,7 @@ type Storage interface {
 	CreateService(ctx context.Context, service models.Service) (models.Service, error)
 	CreateServices(ctx context.Context, graph_id int, services []models.Service) ([]int, error)
 	UpdateService(ctx context.Context, service_id int, service models.Service) error
+	UpdateGraphServices(ctx context.Context, graph_id int, service []models.Service) error
 	DeleteService(ctx context.Context, service_id int) error
 
 	GetRelation(ctx context.Context, relation_id int) (models.Relation, error)
@@ -29,6 +30,7 @@ type Storage interface {
 	CreateRelation(ctx context.Context, relation models.Relation) (models.Relation, error)
 	CreateRelations(ctx context.Context, graph_id int, relations []models.Relation) error
 	UpdateRelation(ctx context.Context, relation_id int, relation models.Relation) error
+	UpdateGraphRelations(ctx context.Context, graph_id int, relations []models.Relation) error
 	DeleteRelation(ctx context.Context, relation_id int) error
 }
 
@@ -64,6 +66,14 @@ func (f Facade) CreateGraph(ctx context.Context, graph models.Graph) (models.Gra
 
 func (f Facade) DeleteGraph(ctx context.Context, graph_id int) error {
 	return f.storage.DeleteGraph(ctx, graph_id)
+}
+
+func (f Facade) UpdateGraphServices(ctx context.Context, graph_id int, services []models.Service) error {
+	return f.storage.UpdateGraphServices(ctx, graph_id, services)
+}
+
+func (f Facade) UpdateGraphRelations(ctx context.Context, graph_id int, relations []models.Relation) error {
+	return f.storage.UpdateGraphRelations(ctx, graph_id, relations)
 }
 
 func (f Facade) UpdateGraph(ctx context.Context, graph_id int, graph models.Graph) error {

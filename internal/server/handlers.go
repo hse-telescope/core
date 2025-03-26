@@ -157,6 +157,48 @@ func (s *Server) deleteGraphHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func (s *Server) updateGraphServicesHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	graph_id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, "ID must be a number", http.StatusBadRequest)
+		return
+	}
+	var services []Service
+	if err := json.NewDecoder(r.Body).Decode(&services); err != nil {
+		http.Error(w, "ID must be a number", http.StatusBadRequest)
+		return
+	}
+	err = s.providerService.UpdateGraphServices(context.Background(), graph_id, omniconv.ConvertSlice(services, ServerService2ProviderService))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Something went wrong: " + err.Error()))
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func (s *Server) updateGraphRelationsHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	graph_id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, "ID must be a number", http.StatusBadRequest)
+		return
+	}
+	var relations []Relation
+	if err := json.NewDecoder(r.Body).Decode(&relations); err != nil {
+		http.Error(w, "ID must be a number", http.StatusBadRequest)
+		return
+	}
+	err = s.providerRelation.UpdateGraphRelations(context.Background(), graph_id, omniconv.ConvertSlice(relations, ServerRelation2ProviderRelation))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Something went wrong: " + err.Error()))
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
 func (s *Server) createGraphHandler(w http.ResponseWriter, r *http.Request) {
 	var graph Graph
 	err := json.NewDecoder(r.Body).Decode(&graph)

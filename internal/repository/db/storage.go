@@ -100,6 +100,28 @@ func (s DB) DeleteGraph(ctx context.Context, graph_id int) error {
 	return err
 }
 
+func (s DB) UpdateGraphServices(ctx context.Context, graph_id int, services []models.Service) error {
+	for _, service := range services {
+		service.GraphID = graph_id
+		err := s.UpdateService(ctx, service.ID, service)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (s DB) UpdateGraphRelations(ctx context.Context, graph_id int, relations []models.Relation) error {
+	for _, relation := range relations {
+		relation.GraphID = graph_id
+		err := s.UpdateRelation(ctx, relation.ID, relation)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (s DB) UpdateGraph(ctx context.Context, graph_id int, graph models.Graph) error {
 	q := `
 		UPDATE graphs
