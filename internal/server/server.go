@@ -32,6 +32,7 @@ type ProviderService interface {
 	GetService(ctx context.Context, service_id int) (service.Service, error)
 	GetGraphServices(ctx context.Context, graph_id int) ([]service.Service, error)
 	CreateService(ctx context.Context, service service.Service) (service.Service, error)
+	CreateServices(ctx context.Context, graph_id int, service []service.Service) ([]int, error)
 	UpdateService(ctx context.Context, service_id int, service service.Service) error
 	DeleteService(ctx context.Context, service_id int) error
 }
@@ -40,6 +41,7 @@ type ProviderRelation interface {
 	GetRelation(ctx context.Context, relation_id int) (relation.Relation, error)
 	GetGraphRelations(ctx context.Context, graph_id int) ([]relation.Relation, error)
 	CreateRelation(ctx context.Context, relation relation.Relation) (relation.Relation, error)
+	CreateRelations(ctx context.Context, graph_id int, relations []relation.Relation) error
 	UpdateRelation(ctx context.Context, relation_id int, relation relation.Relation) error
 	DeleteRelation(ctx context.Context, relation_id int) error
 }
@@ -77,6 +79,8 @@ func (s *Server) setRouter() *mux.Router {
 	mux.HandleFunc("/api/v1/graphs/{id}", s.deleteGraphHandler).Methods(http.MethodDelete)
 	mux.HandleFunc("/api/v1/graphs/{id}/services", s.getGraphServicesHandler).Methods(http.MethodGet)
 	mux.HandleFunc("/api/v1/graphs/{id}/relations", s.getGraphRelationsHandler).Methods(http.MethodGet)
+	mux.HandleFunc("/api/v1/graphs/{id}/services", s.createGraphServicesHandler).Methods(http.MethodPost)
+	mux.HandleFunc("/api/v1/graphs/{id}/relations", s.createGraphRelationsHandler).Methods(http.MethodPost)
 
 	mux.HandleFunc("/api/v1/services", s.createServiceHandler).Methods(http.MethodPost)
 	mux.HandleFunc("/api/v1/services/{id}", s.updateServiceHandler).Methods(http.MethodPut)

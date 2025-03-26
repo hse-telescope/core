@@ -11,6 +11,7 @@ type Repository interface {
 	GetRelation(ctx context.Context, relation_id int) (models.Relation, error)
 	GetGraphRelations(ctx context.Context, graph_id int) ([]models.Relation, error)
 	CreateRelation(ctx context.Context, relation models.Relation) (models.Relation, error)
+	CreateRelations(ctx context.Context, graph_id int, relations []models.Relation) error
 	UpdateRelation(ctx context.Context, relation_id int, relation models.Relation) error
 	DeleteRelation(ctx context.Context, relation_id int) error
 }
@@ -44,6 +45,11 @@ func (p Provider) GetGraphRelations(ctx context.Context, graph_id int) ([]Relati
 func (p Provider) CreateRelation(ctx context.Context, relation Relation) (Relation, error) {
 	newrelation, err := p.repository.CreateRelation(ctx, ProviderRelation2DBRelation(relation))
 	return DBRelation2ProviderRelation(newrelation), err
+}
+
+func (p Provider) CreateRelations(ctx context.Context, graph_id int, relations []Relation) error {
+	err := p.repository.CreateRelations(ctx, graph_id, omniconv.ConvertSlice(relations, ProviderRelation2DBRelation))
+	return err
 }
 
 func (p Provider) UpdateRelation(ctx context.Context, relation_id int, relation Relation) error {

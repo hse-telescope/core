@@ -11,6 +11,7 @@ type Repository interface {
 	GetService(ctx context.Context, service_id int) (models.Service, error)
 	GetGraphServices(ctx context.Context, graph_id int) ([]models.Service, error)
 	CreateService(ctx context.Context, service models.Service) (models.Service, error)
+	CreateServices(ctx context.Context, graph_id int, services []models.Service) ([]int, error)
 	UpdateService(ctx context.Context, service_id int, service models.Service) error
 	DeleteService(ctx context.Context, service_id int) error
 }
@@ -44,6 +45,11 @@ func (p Provider) GetGraphServices(ctx context.Context, graph_id int) ([]Service
 func (p Provider) CreateService(ctx context.Context, service Service) (Service, error) {
 	newservice, err := p.repository.CreateService(ctx, ProviderService2DBService(service))
 	return DBService2ProviderService(newservice), err
+}
+
+func (p Provider) CreateServices(ctx context.Context, graph_id int, services []Service) ([]int, error) {
+	ids, err := p.repository.CreateServices(ctx, graph_id, omniconv.ConvertSlice(services, ProviderService2DBService))
+	return ids, err
 }
 
 func (p Provider) UpdateService(ctx context.Context, service_id int, service Service) error {

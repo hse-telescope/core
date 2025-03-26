@@ -194,6 +194,19 @@ func (s DB) CreateService(ctx context.Context, service models.Service) (models.S
 	return service, err
 }
 
+func (s DB) CreateServices(ctx context.Context, graph_id int, services []models.Service) ([]int, error) {
+	var res []int
+	for _, service := range services {
+		service.GraphID = graph_id
+		serv, err := s.CreateService(ctx, service)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, serv.ID)
+	}
+	return res, nil
+}
+
 func (s DB) GetRelation(ctx context.Context, relation_id int) (models.Relation, error) {
 	q := `
 		SELECT id, graph_id, name, description, from_service, to_service FROM relations WHERE id = $1
@@ -239,6 +252,17 @@ func (s DB) CreateRelation(ctx context.Context, relation models.Relation) (model
 	err := s.db.QueryRowContext(ctx, q, relation.GraphID, relation.Name, relation.Description, relation.FromService, relation.ToService).Scan(&newID)
 	relation.ID = newID
 	return relation, err
+}
+
+func (s DB) CreateRelations(ctx context.Context, graph_id int, relations []models.Relation) error {
+	for _, relation := range relations {
+		relation.GraphID = graph_id
+		_, err := s.CreateRelation(ctx, relation)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (s DB) UpdateRelation(ctx context.Context, relation_id int, relation models.Relation) error {

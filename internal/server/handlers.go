@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/olegdayo/omniconv"
 )
 
 func (s *Server) createProjectHandler(w http.ResponseWriter, r *http.Request) {
@@ -23,7 +24,7 @@ func (s *Server) createProjectHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Something went wrong: " + err.Error()))
 		return
 	}
-	body, err := json.Marshal(newproject)
+	body, err := json.Marshal(ProviderProject2ServerProject(newproject))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Something went wrong: " + err.Error()))
@@ -41,7 +42,7 @@ func (s *Server) getProjectsHanlder(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Something went wrong: " + err.Error()))
 		return
 	}
-	body, err := json.Marshal(projects)
+	body, err := json.Marshal(omniconv.ConvertSlice(projects, ProviderProject2ServerProject))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Something went wrong"))
@@ -105,7 +106,7 @@ func (s *Server) GetProjectGraphsHandler(w http.ResponseWriter, r *http.Request)
 		w.Write([]byte("Something went wrong: " + err.Error()))
 		return
 	}
-	body, err := json.Marshal(graphs)
+	body, err := json.Marshal(omniconv.ConvertSlice(graphs, ProviderGraph2ServerGraph))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Something went wrong"))
@@ -171,7 +172,7 @@ func (s *Server) createGraphHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Something went wrong: " + err.Error()))
 		return
 	}
-	body, err := json.Marshal(newgraph)
+	body, err := json.Marshal(ProviderGraph2ServerGraph(newgraph))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Something went wrong: " + err.Error()))
@@ -195,7 +196,7 @@ func (s *Server) getGraphServicesHandler(w http.ResponseWriter, r *http.Request)
 		w.Write([]byte("Something went wrong: " + err.Error()))
 		return
 	}
-	body, err := json.Marshal(services)
+	body, err := json.Marshal(omniconv.ConvertSlice(services, ProviderService2ServerService))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Something went wrong"))
@@ -219,7 +220,7 @@ func (s *Server) getGraphRelationsHandler(w http.ResponseWriter, r *http.Request
 		w.Write([]byte("Something went wrong: " + err.Error()))
 		return
 	}
-	body, err := json.Marshal(relations)
+	body, err := json.Marshal(omniconv.ConvertSlice(relations, ProviderRelation2ServerRelation))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Something went wrong"))
@@ -227,6 +228,52 @@ func (s *Server) getGraphRelationsHandler(w http.ResponseWriter, r *http.Request
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(body)
+}
+
+func (s *Server) createGraphServicesHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	graph_id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, "ID must be a number", http.StatusBadRequest)
+		return
+	}
+	var services []Service
+	if err := json.NewDecoder(r.Body).Decode(&services); err != nil {
+		http.Error(w, "ID must be a number", http.StatusBadRequest)
+		return
+	}
+	ids, err := s.providerService.CreateServices(context.Background(), graph_id, omniconv.ConvertSlice(services, ServerService2ProviderService))
+	if err != nil {
+		http.Error(w, "ID must be a number", http.StatusBadRequest)
+		return
+	}
+	body, err := json.Marshal(ids)
+	if err != nil {
+		http.Error(w, "ID must be a number", http.StatusBadRequest)
+		return
+	}
+	w.Write(body)
+	w.WriteHeader(http.StatusCreated)
+}
+
+func (s *Server) createGraphRelationsHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	graph_id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, "ID must be a number", http.StatusBadRequest)
+		return
+	}
+	var relations []Relation
+	if err := json.NewDecoder(r.Body).Decode(&relations); err != nil {
+		http.Error(w, "ID must be a number", http.StatusBadRequest)
+		return
+	}
+	err = s.providerRelation.CreateRelations(context.Background(), graph_id, omniconv.ConvertSlice(relations, ServerRelation2ProviderRelation))
+	if err != nil {
+		http.Error(w, "ID must be a number", http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
 }
 
 func (s *Server) getServiceHandler(w http.ResponseWriter, r *http.Request) {
@@ -243,7 +290,7 @@ func (s *Server) getServiceHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Something went wrong: " + err.Error()))
 		return
 	}
-	body, err := json.Marshal(service)
+	body, err := json.Marshal(ProviderService2ServerService(service))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Something went wrong"))
@@ -308,7 +355,7 @@ func (s *Server) createServiceHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Something went wrong: " + err.Error()))
 		return
 	}
-	body, err := json.Marshal(newservice)
+	body, err := json.Marshal(ProviderService2ServerService(newservice))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Something went wrong: " + err.Error()))
@@ -332,7 +379,7 @@ func (s *Server) getRelationHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Something went wrong: " + err.Error()))
 		return
 	}
-	body, err := json.Marshal(relation)
+	body, err := json.Marshal(ProviderRelation2ServerRelation(relation))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Something went wrong"))
@@ -397,7 +444,7 @@ func (s *Server) createRelationHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Something went wrong: " + err.Error()))
 		return
 	}
-	body, err := json.Marshal(newrelation)
+	body, err := json.Marshal(ProviderRelation2ServerRelation(newrelation))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Something went wrong: " + err.Error()))

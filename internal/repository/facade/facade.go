@@ -20,12 +20,14 @@ type Storage interface {
 	GetService(ctx context.Context, service_id int) (models.Service, error)
 	GetGraphServices(ctx context.Context, graph_id int) ([]models.Service, error)
 	CreateService(ctx context.Context, service models.Service) (models.Service, error)
+	CreateServices(ctx context.Context, graph_id int, services []models.Service) ([]int, error)
 	UpdateService(ctx context.Context, service_id int, service models.Service) error
 	DeleteService(ctx context.Context, service_id int) error
 
 	GetRelation(ctx context.Context, relation_id int) (models.Relation, error)
 	GetGraphRelations(ctx context.Context, graph_id int) ([]models.Relation, error)
 	CreateRelation(ctx context.Context, relation models.Relation) (models.Relation, error)
+	CreateRelations(ctx context.Context, graph_id int, relations []models.Relation) error
 	UpdateRelation(ctx context.Context, relation_id int, relation models.Relation) error
 	DeleteRelation(ctx context.Context, relation_id int) error
 }
@@ -84,6 +86,10 @@ func (f Facade) CreateService(ctx context.Context, service models.Service) (mode
 	return f.storage.CreateService(ctx, service)
 }
 
+func (f Facade) CreateServices(ctx context.Context, graph_id int, services []models.Service) ([]int, error) {
+	return f.storage.CreateServices(ctx, graph_id, services)
+}
+
 func (f Facade) UpdateService(ctx context.Context, service_id int, service models.Service) error {
 	return f.storage.UpdateService(ctx, service_id, service)
 }
@@ -106,6 +112,10 @@ func (f Facade) CreateRelation(ctx context.Context, relation models.Relation) (m
 
 func (f Facade) UpdateRelation(ctx context.Context, relation_id int, relation models.Relation) error {
 	return f.storage.UpdateRelation(ctx, relation_id, relation)
+}
+
+func (f Facade) CreateRelations(ctx context.Context, graph_id int, relations []models.Relation) error {
+	return f.storage.CreateRelations(ctx, graph_id, relations)
 }
 
 func (f Facade) DeleteRelation(ctx context.Context, relation_id int) error {
