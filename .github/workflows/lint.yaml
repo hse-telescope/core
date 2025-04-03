@@ -24,6 +24,5 @@ jobs:
       - name: Download modules
         run: go mod tidy
 
-
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v4
