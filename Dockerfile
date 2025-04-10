@@ -7,4 +7,6 @@ RUN make build
 FROM alpine:latest AS runner
 WORKDIR /app
 COPY --from=builder /app/bin/core ./bin/core
+COPY migrations migrations
+
 ENTRYPOINT ["./bin/core"]
