@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  core:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    hostname: core
+    ports:
+      - '8080:8080'
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - frontend2backend
+
+  db:
+    image: postgres:15.1
+    hostname: db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: graphs
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user -d graphs" ]
+      interval: 10s
+      timeout: 5s
+      retries: 150
+      start_period: 20s
+    networks:
+      - frontend2backend
+
+networks:
+  frontend2backend:
+    external: true
