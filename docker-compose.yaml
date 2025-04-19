@@ -1,11 +1,7 @@
 version: '3'
 
 services:
-<<<<<<< HEAD
   core:
-=======
-  mvp-backend:
->>>>>>> 843687a96f49fa12d814510d54075b6132726729
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -13,24 +9,14 @@ services:
     ports:
       - '8080:8080'
     depends_on:
-<<<<<<< HEAD
       db:
-=======
-      mvp-db:
->>>>>>> 843687a96f49fa12d814510d54075b6132726729
         condition: service_healthy
     networks:
       - frontend2backend
 
-<<<<<<< HEAD
   db:
     image: postgres:15.1
     hostname: db
-=======
-  mvp-db:
-    image: postgres:15.1
-    hostname: mvp-db
->>>>>>> 843687a96f49fa12d814510d54075b6132726729
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
