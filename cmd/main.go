@@ -19,7 +19,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	storage, err := db.New(conf.DB.GetDBURL(), "file://migrations")
+	storage, err := db.New(conf.DB.GetDBURL(), conf.DB.MigrationsPath)
 	if err != nil {
 		panic(err)
 	}
