@@ -14,6 +14,7 @@ require (
 )
 
 require (
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/golang-migrate/migrate/v4 v4.18.2 // indirect
 	github.com/gorilla/mux v1.8.1
 	github.com/hashicorp/errwrap v1.1.0 // indirect
@@ -21,6 +22,7 @@ require (
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/lib/pq v1.10.9 // indirect
 	github.com/olegdayo/omniconv v0.1.3
+	github.com/rs/cors v1.11.1
 	go.uber.org/atomic v1.7.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1
 )

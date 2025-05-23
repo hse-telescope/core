@@ -12,11 +12,13 @@ type Storage interface {
 	UpdateProject(ctx context.Context, project_id int, project models.Project) error
 	DeleteProject(ctx context.Context, project_id int) error
 
+	GetGraphProject(ctx context.Context, graph_id int) (int, error)
 	CreateGraph(ctx context.Context, graph models.Graph) (models.Graph, error)
 	DeleteGraph(ctx context.Context, graph_id int) error
 	UpdateGraph(ctx context.Context, graph_id int, graph models.Graph) error
 	GetProjectGraphs(ctx context.Context, project_id int) ([]models.Graph, error)
 
+	GetServiceGraph(ctx context.Context, service_id int) (int, error)
 	GetService(ctx context.Context, service_id int) (models.Service, error)
 	GetGraphServices(ctx context.Context, graph_id int) ([]models.Service, error)
 	CreateService(ctx context.Context, service models.Service) (models.Service, error)
@@ -25,6 +27,7 @@ type Storage interface {
 	UpdateGraphServices(ctx context.Context, graph_id int, service []models.Service) error
 	DeleteService(ctx context.Context, service_id int) error
 
+	GetRelationGraph(ctx context.Context, relation_id int) (int, error)
 	GetRelation(ctx context.Context, relation_id int) (models.Relation, error)
 	GetGraphRelations(ctx context.Context, graph_id int) ([]models.Relation, error)
 	CreateRelation(ctx context.Context, relation models.Relation) (models.Relation, error)
@@ -60,6 +63,10 @@ func (f Facade) DeleteProject(ctx context.Context, project_id int) error {
 	return f.storage.DeleteProject(ctx, project_id)
 }
 
+func (f Facade) GetGraphProject(ctx context.Context, graph_id int) (int, error) {
+	return f.storage.GetGraphProject(ctx, graph_id)
+}
+
 func (f Facade) CreateGraph(ctx context.Context, graph models.Graph) (models.Graph, error) {
 	return f.storage.CreateGraph(ctx, graph)
 }
@@ -84,6 +91,10 @@ func (f Facade) GetProjectGraphs(ctx context.Context, project_id int) ([]models.
 	return f.storage.GetProjectGraphs(ctx, project_id)
 }
 
+func (f Facade) GetServiceGraph(ctx context.Context, service_id int) (int, error) {
+	return f.storage.GetServiceGraph(ctx, service_id)
+}
+
 func (f Facade) GetService(ctx context.Context, service_id int) (models.Service, error) {
 	return f.storage.GetService(ctx, service_id)
 }
@@ -106,6 +117,10 @@ func (f Facade) UpdateService(ctx context.Context, service_id int, service model
 
 func (f Facade) DeleteService(ctx context.Context, service_id int) error {
 	return f.storage.DeleteService(ctx, service_id)
+}
+
+func (f Facade) GetRelationGraph(ctx context.Context, relation_id int) (int, error) {
+	return f.storage.GetRelationGraph(ctx, relation_id)
 }
 
 func (f Facade) GetRelation(ctx context.Context, relation_id int) (models.Relation, error) {

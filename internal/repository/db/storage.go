@@ -82,6 +82,18 @@ func (s DB) DeleteProject(ctx context.Context, project_id int) error {
 	return err
 }
 
+func (s DB) GetGraphProject(ctx context.Context, graphID int) (int, error) {
+	var projectID int
+	err := s.db.QueryRowContext(ctx, `
+		SELECT project_id FROM graphs WHERE id = $1
+	`, graphID).Scan(&projectID)
+
+	if err != nil {
+		return -1, err
+	}
+	return projectID, nil
+}
+
 func (s DB) CreateGraph(ctx context.Context, graph models.Graph) (models.Graph, error) {
 	q := `
 		INSERT INTO graphs (project_id, name) VALUES ($1, $2) RETURNING id
@@ -150,6 +162,17 @@ func (s DB) GetProjectGraphs(ctx context.Context, project_id int) ([]models.Grap
 		return nil, err
 	}
 	return graphs, nil
+}
+
+func (s DB) GetServiceGraph(ctx context.Context, service_id int) (int, error) {
+	var graphID int
+	err := s.db.QueryRowContext(ctx, `
+		SELECT graph_id FROM services WHERE id = $1
+	`, service_id).Scan(&graphID)
+	if err != nil {
+		return -1, err
+	}
+	return graphID, nil
 }
 
 func (s DB) GetService(ctx context.Context, service_id int) (models.Service, error) {
@@ -227,6 +250,17 @@ func (s DB) CreateServices(ctx context.Context, graph_id int, services []models.
 		res = append(res, serv.ID)
 	}
 	return res, nil
+}
+
+func (s DB) GetRelationGraph(ctx context.Context, relation_id int) (int, error) {
+	var graphID int
+	err := s.db.QueryRowContext(ctx, `
+		SELECT graph_id FROM relations WHERE id = $1
+	`, relation_id).Scan(&graphID)
+	if err != nil {
+		return -1, err
+	}
+	return graphID, nil
 }
 
 func (s DB) GetRelation(ctx context.Context, relation_id int) (models.Relation, error) {

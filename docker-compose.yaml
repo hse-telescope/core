@@ -1,27 +1,72 @@
 version: '3'
 
 services:
-  core:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    hostname: core
-    ports:
-      - '8080:8080'
+  auth:
+    image: sha256:74f2dbdf4120d4b8e440fce6b697029fe00386741ebefc8bafa72b133f1f0b00
+    command: ["./auth.yaml"]
+    volumes:
+      - './configs/auth.yaml:/app/auth.yaml:ro'
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: '64M'
     depends_on:
-      db:
+      auth-db:
         condition: service_healthy
     networks:
-      - frontend2backend
+      - gateway2auth
+      - auth2db
 
-  db:
+  core:
+    image: sha256:368e3ac4c2a2ce1da08c7935181debf9278ef866843c142f7220ef755eac45d0
+    command: ["./bin/core", "./core.yaml"]
+    volumes:
+      - './configs/core.yaml:/app/core.yaml:ro'
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: '64M'
+    depends_on:
+      core-db:
+        condition: service_healthy
+      # core-s3:
+      #   condition: service_healthy
+    networks:
+      - gateway2core
+      - core2db
+      # - core2s3
+
+  gateway:
+    image: sha256:c6b81f4689bee4277b0c38eea6da24e9083514f9897a289e36e1d244d3691863
+    command: ["./gateway.yaml"]
+    volumes:
+      - './configs/gateway.yaml:/app/gateway.yaml:ro'
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: '64M'
+    depends_on:
+      - auth
+      - core
+    networks:
+      - gateway2auth
+      - gateway2core
+      - frontend2gateway
+    ports:
+      - "8080:8080" 
+  auth-db:
     image: postgres:15.1
-    hostname: db
+    hostname: auth-db
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: graphs
+      POSTGRES_DB: db
       PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - auth-data:/var/lib/postgresql/data
     restart: unless-stopped
     deploy:
       resources:
@@ -29,14 +74,59 @@ services:
           cpus: '0.5'
           memory: 128M
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U user -d graphs" ]
-      interval: 10s
+      test: [ "CMD-SHELL", "pg_isready -U user -d db" ]
+      interval: 5s
       timeout: 5s
-      retries: 150
-      start_period: 20s
+      retries: 100
+      start_period: 10s
     networks:
-      - frontend2backend
+      - auth2db
+
+  core-db:
+    image: postgres:15.1
+    hostname: core-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - core-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user -d db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 100
+      start_period: 10s
+    networks:
+      - core2db
 
 networks:
-  frontend2backend:
+  frontend2gateway:
     external: true
+    name: frontend2gateway
+  gateway2core:
+    external: true
+    name: gateway2core
+  gateway2auth:
+    external: true
+    name: gateway2auth
+  core2db:
+    external: true
+    name: core2db
+  auth2db:
+    external: true
+    name: auth2db
+  # core2s3:
+  #   external: true
+  #   name: core2s3
+
+volumes:
+  auth-data:
+  core-data:

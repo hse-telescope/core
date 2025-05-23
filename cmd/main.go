@@ -30,6 +30,7 @@ func main() {
 	GraphProvider := graph.New(facade)
 	ServiceProvide := service.New(facade)
 	RelationProvide := relation.New(facade)
+	// HistoryProvide := history.New(facade)
 
 	s := server.New(conf, ProjectProvide, GraphProvider, ServiceProvide, RelationProvide)
 	panic(s.Start())
