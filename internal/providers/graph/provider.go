@@ -8,6 +8,7 @@ import (
 )
 
 type Repository interface {
+	GetGraphProject(ctx context.Context, graph_id int) (int, error)
 	CreateGraph(ctx context.Context, graph models.Graph) (models.Graph, error)
 	DeleteGraph(ctx context.Context, graph_id int) error
 	UpdateGraph(ctx context.Context, graph_id int, graph models.Graph) error
@@ -27,6 +28,11 @@ func New(repository Repository) Provider {
 func (p Provider) CreateGraph(ctx context.Context, graph Graph) (Graph, error) {
 	newgraph, err := p.repository.CreateGraph(ctx, ProviderGraph2DBGraph(graph))
 	return DBGraph2ProviderGraph(newgraph), err
+}
+
+func (p Provider) GetGraphProject(ctx context.Context, graph_id int) (int, error) {
+	project_id, err := p.repository.GetGraphProject(ctx, graph_id)
+	return project_id, err
 }
 
 func (p Provider) DeleteGraph(ctx context.Context, graph_id int) error {

@@ -8,6 +8,7 @@ import (
 )
 
 type Repository interface {
+	GetRelationGraph(ctx context.Context, relation_id int) (int, error)
 	GetRelation(ctx context.Context, relation_id int) (models.Relation, error)
 	GetGraphRelations(ctx context.Context, graph_id int) ([]models.Relation, error)
 	CreateRelation(ctx context.Context, relation models.Relation) (models.Relation, error)
@@ -25,6 +26,14 @@ func New(repository Repository) Provider {
 	return Provider{
 		repository: repository,
 	}
+}
+
+func (p Provider) GetRelationGraph(ctx context.Context, relation_id int) (int, error) {
+	graph_id, err := p.repository.GetRelationGraph(ctx, relation_id)
+	if err != nil {
+		return -1, err
+	}
+	return graph_id, nil
 }
 
 func (p Provider) GetRelation(ctx context.Context, relation_id int) (Relation, error) {

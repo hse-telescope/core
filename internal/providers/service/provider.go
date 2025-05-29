@@ -8,6 +8,7 @@ import (
 )
 
 type Repository interface {
+	GetServiceGraph(ctx context.Context, service_id int) (int, error)
 	GetService(ctx context.Context, service_id int) (models.Service, error)
 	GetGraphServices(ctx context.Context, graph_id int) ([]models.Service, error)
 	CreateService(ctx context.Context, service models.Service) (models.Service, error)
@@ -25,6 +26,14 @@ func New(repository Repository) Provider {
 	return Provider{
 		repository: repository,
 	}
+}
+
+func (p Provider) GetServiceGraph(ctx context.Context, service_id int) (int, error) {
+	graph_id, err := p.repository.GetServiceGraph(ctx, service_id)
+	if err != nil {
+		return -1, err
+	}
+	return graph_id, nil
 }
 
 func (p Provider) GetService(ctx context.Context, service_id int) (Service, error) {
