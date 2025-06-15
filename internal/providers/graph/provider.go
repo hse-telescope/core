@@ -26,7 +26,7 @@ func New(repository Repository) Provider {
 }
 
 func (p Provider) CreateGraph(ctx context.Context, graph Graph) (Graph, error) {
-	ctx, span := tracer.Start(ctx, "providerCreateGraph")
+	ctx, span := tracer.Start(ctx, "provider/CreateGraph")
 	defer span.End()
 
 	newgraph, err := p.repository.CreateGraph(ctx, ProviderGraph2DBGraph(graph))
@@ -34,7 +34,7 @@ func (p Provider) CreateGraph(ctx context.Context, graph Graph) (Graph, error) {
 }
 
 func (p Provider) DeleteGraph(ctx context.Context, graph_id int) error {
-	ctx, span := tracer.Start(ctx, "providerDeleteGraph")
+	ctx, span := tracer.Start(ctx, "provider/DeleteGraph")
 	defer span.End()
 
 	err := p.repository.DeleteGraph(ctx, graph_id)
@@ -42,7 +42,7 @@ func (p Provider) DeleteGraph(ctx context.Context, graph_id int) error {
 }
 
 func (p Provider) UpdateGraph(ctx context.Context, graph_id int, graph Graph) error {
-	ctx, span := tracer.Start(ctx, "providerUpdateGraph")
+	ctx, span := tracer.Start(ctx, "provider/UpdateGraph")
 	defer span.End()
 
 	err := p.repository.UpdateGraph(ctx, graph_id, ProviderGraph2DBGraph(graph))
@@ -50,7 +50,7 @@ func (p Provider) UpdateGraph(ctx context.Context, graph_id int, graph Graph) er
 }
 
 func (p Provider) GetProjectGraphs(ctx context.Context, project_id int) ([]Graph, error) {
-	ctx, span := tracer.Start(ctx, "providerGetProjectGraphs")
+	ctx, span := tracer.Start(ctx, "provider/GetProjectGraphs")
 	defer span.End()
 
 	graphs, err := p.repository.GetProjectGraphs(ctx, project_id)

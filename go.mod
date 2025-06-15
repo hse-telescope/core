@@ -25,11 +25,12 @@ require (
 
 require (
 	github.com/hse-telescope/logger v0.0.0-20250615163628-0408d63d601d
-	github.com/hse-telescope/tracer v0.0.0-20250615173916-89894da88467
+	github.com/hse-telescope/tracer v0.0.0-20250615191724-3d1b22a5de42
 )
 
 require (
 	github.com/cenkalti/backoff/v5 v5.0.2 // indirect
+	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/google/uuid v1.6.0 // indirect
@@ -38,6 +39,7 @@ require (
 	github.com/samber/slog-multi v1.4.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/contrib/bridges/otelslog v0.11.0 // indirect
+	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.61.0 // indirect
 	go.opentelemetry.io/otel v1.36.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc v0.12.2 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.36.0 // indirect

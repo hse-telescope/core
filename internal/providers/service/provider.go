@@ -29,7 +29,7 @@ func New(repository Repository) Provider {
 }
 
 func (p Provider) GetService(ctx context.Context, service_id int) (Service, error) {
-	ctx, span := tracer.Start(ctx, "providerGetService")
+	ctx, span := tracer.Start(ctx, "provider/GetService")
 	defer span.End()
 
 	service, err := p.repository.GetService(ctx, service_id)
@@ -40,7 +40,7 @@ func (p Provider) GetService(ctx context.Context, service_id int) (Service, erro
 }
 
 func (p Provider) GetGraphServices(ctx context.Context, graph_id int) ([]Service, error) {
-	ctx, span := tracer.Start(ctx, "providerGetGraphServices")
+	ctx, span := tracer.Start(ctx, "provider/GetGraphServices")
 	defer span.End()
 
 	services, err := p.repository.GetGraphServices(ctx, graph_id)
@@ -51,7 +51,7 @@ func (p Provider) GetGraphServices(ctx context.Context, graph_id int) ([]Service
 }
 
 func (p Provider) CreateService(ctx context.Context, service Service) (Service, error) {
-	ctx, span := tracer.Start(ctx, "providerCreateService")
+	ctx, span := tracer.Start(ctx, "provider/CreateService")
 	defer span.End()
 
 	newservice, err := p.repository.CreateService(ctx, ProviderService2DBService(service))
@@ -59,7 +59,7 @@ func (p Provider) CreateService(ctx context.Context, service Service) (Service, 
 }
 
 func (p Provider) CreateServices(ctx context.Context, graph_id int, services []Service) ([]int, error) {
-	ctx, span := tracer.Start(ctx, "providerCreateServices")
+	ctx, span := tracer.Start(ctx, "provider/CreateServices")
 	defer span.End()
 
 	ids, err := p.repository.CreateServices(ctx, graph_id, omniconv.ConvertSlice(services, ProviderService2DBService))
@@ -67,7 +67,7 @@ func (p Provider) CreateServices(ctx context.Context, graph_id int, services []S
 }
 
 func (p Provider) UpdateService(ctx context.Context, service_id int, service Service) error {
-	ctx, span := tracer.Start(ctx, "providerUpdateService")
+	ctx, span := tracer.Start(ctx, "provider/UpdateService")
 	defer span.End()
 
 	err := p.repository.UpdateService(ctx, service_id, ProviderService2DBService(service))
@@ -75,7 +75,7 @@ func (p Provider) UpdateService(ctx context.Context, service_id int, service Ser
 }
 
 func (p Provider) UpdateGraphServices(ctx context.Context, graph_id int, services []Service) error {
-	ctx, span := tracer.Start(ctx, "providerUpdateGraphServices")
+	ctx, span := tracer.Start(ctx, "provider/UpdateGraphServices")
 	defer span.End()
 
 	err := p.repository.UpdateGraphServices(ctx, graph_id, omniconv.ConvertSlice(services, ProviderService2DBService))
@@ -83,7 +83,7 @@ func (p Provider) UpdateGraphServices(ctx context.Context, graph_id int, service
 }
 
 func (p Provider) DeleteService(ctx context.Context, service_id int) error {
-	ctx, span := tracer.Start(ctx, "providerDeleteService")
+	ctx, span := tracer.Start(ctx, "provider/DeleteService")
 	defer span.End()
 
 	err := p.repository.DeleteService(ctx, service_id)
