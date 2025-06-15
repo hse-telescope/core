@@ -12,6 +12,8 @@ import (
 	"github.com/hse-telescope/core/internal/providers/project"
 	"github.com/hse-telescope/core/internal/providers/relation"
 	"github.com/hse-telescope/core/internal/providers/service"
+	"github.com/hse-telescope/logger"
+	"github.com/hse-telescope/tracer"
 )
 
 type ProviderProject interface {
@@ -69,6 +71,8 @@ func New(conf config.Config, provideProject ProviderProject, provideGraph Provid
 
 func (s *Server) setRouter() *mux.Router {
 	mux := mux.NewRouter()
+
+	mux.Use(logger.AddLoggingMiddleware, tracer.AddTracingMiddleware)
 
 	mux.HandleFunc("/projects", s.createProjectHandler).Methods(http.MethodPost)
 	mux.HandleFunc("/projects", s.getProjectsHanlder).Methods(http.MethodGet)
