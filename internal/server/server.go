@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/hse-telescope/core/internal/config"
 	"github.com/hse-telescope/core/internal/providers/graph"
@@ -73,6 +74,8 @@ func (s *Server) setRouter() *mux.Router {
 	mux := mux.NewRouter()
 
 	mux.Use(logger.AddLoggingMiddleware, tracer.AddTracingMiddleware)
+
+	mux.Handle("/metrics", promhttp.Handler())
 
 	mux.HandleFunc("/projects", s.createProjectHandler).Methods(http.MethodPost)
 	mux.HandleFunc("/projects", s.getProjectsHanlder).Methods(http.MethodGet)
