@@ -29,7 +29,7 @@ func New(repository Repository) Provider {
 }
 
 func (p Provider) GetRelation(ctx context.Context, relation_id int) (Relation, error) {
-	ctx, span := tracer.Start(ctx, "storage/GetRelation")
+	ctx, span := tracer.Start(ctx, "providerGetRelation")
 	defer span.End()
 
 	relation, err := p.repository.GetRelation(ctx, relation_id)
@@ -40,7 +40,7 @@ func (p Provider) GetRelation(ctx context.Context, relation_id int) (Relation, e
 }
 
 func (p Provider) GetGraphRelations(ctx context.Context, graph_id int) ([]Relation, error) {
-	ctx, span := tracer.Start(ctx, "storage/GetGraphRelations")
+	ctx, span := tracer.Start(ctx, "providerGetGraphRelations")
 	defer span.End()
 
 	relations, err := p.repository.GetGraphRelations(ctx, graph_id)
@@ -51,7 +51,7 @@ func (p Provider) GetGraphRelations(ctx context.Context, graph_id int) ([]Relati
 }
 
 func (p Provider) CreateRelation(ctx context.Context, relation Relation) (Relation, error) {
-	ctx, span := tracer.Start(ctx, "storage/CreateRelation")
+	ctx, span := tracer.Start(ctx, "providerCreateRelation")
 	defer span.End()
 
 	newrelation, err := p.repository.CreateRelation(ctx, ProviderRelation2DBRelation(relation))
@@ -59,7 +59,7 @@ func (p Provider) CreateRelation(ctx context.Context, relation Relation) (Relati
 }
 
 func (p Provider) CreateRelations(ctx context.Context, graph_id int, relations []Relation) error {
-	ctx, span := tracer.Start(ctx, "storage/CreateRelations")
+	ctx, span := tracer.Start(ctx, "providerCreateRelations")
 	defer span.End()
 
 	err := p.repository.CreateRelations(ctx, graph_id, omniconv.ConvertSlice(relations, ProviderRelation2DBRelation))
@@ -67,7 +67,7 @@ func (p Provider) CreateRelations(ctx context.Context, graph_id int, relations [
 }
 
 func (p Provider) UpdateRelation(ctx context.Context, relation_id int, relation Relation) error {
-	ctx, span := tracer.Start(ctx, "storage/UpdateRelation")
+	ctx, span := tracer.Start(ctx, "providerUpdateRelation")
 	defer span.End()
 
 	err := p.repository.UpdateRelation(ctx, relation_id, ProviderRelation2DBRelation(relation))
@@ -75,7 +75,7 @@ func (p Provider) UpdateRelation(ctx context.Context, relation_id int, relation 
 }
 
 func (p Provider) UpdateGraphRelations(ctx context.Context, graph_id int, relations []Relation) error {
-	ctx, span := tracer.Start(ctx, "storage/UpdateGraphRelations")
+	ctx, span := tracer.Start(ctx, "providerUpdateGraphRelations")
 	defer span.End()
 
 	err := p.repository.UpdateGraphRelations(ctx, graph_id, omniconv.ConvertSlice(relations, ProviderRelation2DBRelation))
@@ -83,7 +83,7 @@ func (p Provider) UpdateGraphRelations(ctx context.Context, graph_id int, relati
 }
 
 func (p Provider) DeleteRelation(ctx context.Context, relation_id int) error {
-	ctx, span := tracer.Start(ctx, "storage/DeleteRelation")
+	ctx, span := tracer.Start(ctx, "providerDeleteRelation")
 	defer span.End()
 
 	err := p.repository.DeleteRelation(ctx, relation_id)

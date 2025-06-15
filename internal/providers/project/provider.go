@@ -26,7 +26,7 @@ func New(repository Repository) Provider {
 }
 
 func (p Provider) GetProjects(ctx context.Context) ([]Project, error) {
-	ctx, span := tracer.Start(ctx, "storage/GetProjects")
+	ctx, span := tracer.Start(ctx, "providerGetProjects")
 	defer span.End()
 
 	projects, err := p.repository.GetProjects(ctx)
@@ -37,7 +37,7 @@ func (p Provider) GetProjects(ctx context.Context) ([]Project, error) {
 }
 
 func (p Provider) CreateProject(ctx context.Context, project Project) (Project, error) {
-	ctx, span := tracer.Start(ctx, "storage/CreateProject")
+	ctx, span := tracer.Start(ctx, "providerCreateProject")
 	defer span.End()
 
 	newproject, err := p.repository.CreateProject(ctx, ProviderProject2DBProject(project))
@@ -45,7 +45,7 @@ func (p Provider) CreateProject(ctx context.Context, project Project) (Project, 
 }
 
 func (p Provider) UpdateProject(ctx context.Context, project_id int, project Project) error {
-	ctx, span := tracer.Start(ctx, "storage/UpdateProject")
+	ctx, span := tracer.Start(ctx, "providerUpdateProject")
 	defer span.End()
 
 	err := p.repository.UpdateProject(ctx, project_id, ProviderProject2DBProject(project))
@@ -53,7 +53,7 @@ func (p Provider) UpdateProject(ctx context.Context, project_id int, project Pro
 }
 
 func (p Provider) DeleteProject(ctx context.Context, project_id int) error {
-	ctx, span := tracer.Start(ctx, "storage/DeleteProject")
+	ctx, span := tracer.Start(ctx, "providerDeleteProject")
 	defer span.End()
 
 	err := p.repository.DeleteProject(ctx, project_id)
