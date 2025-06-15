@@ -61,8 +61,8 @@ github.com/hashicorp/go-multierror v1.1.1 h1:H5DkEtf6CXdFp0N0Em5UCwQpXMWke8IA0+l
 github.com/hashicorp/go-multierror v1.1.1/go.mod h1:iw975J/qwKPdAO1clOe2L8331t/9/fmwbPZ6JB6eMoM=
 github.com/hse-telescope/logger v0.0.0-20250615163628-0408d63d601d h1:WCdj813OIxXkuTRHHVY9YFNmCfrQGH0M9v8QmaNT9y4=
 github.com/hse-telescope/logger v0.0.0-20250615163628-0408d63d601d/go.mod h1:eQJWuSlapiP1vF3AswjKn3fJyIpsQBpytQZ8vJinMxI=
-github.com/hse-telescope/tracer v0.0.0-20250615211147-74fd92033aab h1:Yr8WyB6Jvjq12W8zJi72p0oQKcO2p7Nc/IrIRncxlB8=
-github.com/hse-telescope/tracer v0.0.0-20250615211147-74fd92033aab/go.mod h1:on9DXPoAUL4YB0FwGXaGvkAAMJNhsxvF7MPD7aNT6Dk=
+github.com/hse-telescope/tracer v0.0.0-20250615212548-8e79983ca5a0 h1:K8MUfJ9IJmDPXn+eZJQVgHKAbrgiKSljaLXUEWCgfe0=
+github.com/hse-telescope/tracer v0.0.0-20250615212548-8e79983ca5a0/go.mod h1:on9DXPoAUL4YB0FwGXaGvkAAMJNhsxvF7MPD7aNT6Dk=
 github.com/hse-telescope/utils v0.0.0-20250412190134-e84f2910ce93 h1:N/5bFmzEPA7+clD8t1+cIiHqdbYhiuAoK9cmjN8gmes=
 github.com/hse-telescope/utils v0.0.0-20250412190134-e84f2910ce93/go.mod h1:ljzTOtseIittLTjwtRkDycmmYrxn6x3KOlaCfxrg9Eo=
 github.com/jmoiron/sqlx v1.4.0 h1:1PLqN7S1UYp5t4SrVVnt4nUVNemrDAtxlulVe+Qgm3o=
