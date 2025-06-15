@@ -25,12 +25,11 @@ require (
 
 require (
 	github.com/hse-telescope/logger v0.0.0-20250615163628-0408d63d601d
-	github.com/hse-telescope/tracer v0.0.0-20250615191724-3d1b22a5de42
+	github.com/hse-telescope/tracer v0.0.0-20250615192856-1d375fc41ed1
 )
 
 require (
 	github.com/cenkalti/backoff/v5 v5.0.2 // indirect
-	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/google/uuid v1.6.0 // indirect
