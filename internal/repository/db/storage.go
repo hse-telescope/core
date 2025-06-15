@@ -5,16 +5,13 @@ import (
 	"database/sql"
 
 	"github.com/hse-telescope/core/internal/repository/models"
+	"github.com/hse-telescope/tracer"
 	"github.com/hse-telescope/utils/db/psql"
 	"github.com/jmoiron/sqlx"
 )
 
 type DB struct {
 	db *sql.DB
-}
-
-func (s DB) New(param1 string, path string) (any, error) {
-	panic("unimplemented")
 }
 
 func New(dbURL string, migrationsPath string) (DB, error) {
@@ -30,9 +27,12 @@ func New(dbURL string, migrationsPath string) (DB, error) {
 	return DB{
 		db: db,
 	}, nil
-
 }
+
 func (s DB) GetProjects(ctx context.Context) ([]models.Project, error) {
+	ctx, span := tracer.Start(ctx, "storage/GetProjects")
+	defer span.End()
+
 	q := `
 		SELECT
 			id,
@@ -52,6 +52,9 @@ func (s DB) GetProjects(ctx context.Context) ([]models.Project, error) {
 }
 
 func (s DB) CreateProject(ctx context.Context, project models.Project) (models.Project, error) {
+	ctx, span := tracer.Start(ctx, "storage/CreateProject")
+	defer span.End()
+
 	q := `
 		INSERT INTO projects (name) VALUES ($1) RETURNING id
 	`
@@ -62,6 +65,9 @@ func (s DB) CreateProject(ctx context.Context, project models.Project) (models.P
 }
 
 func (s DB) UpdateProject(ctx context.Context, project_id int, project models.Project) error {
+	ctx, span := tracer.Start(ctx, "storage/UpdateProject")
+	defer span.End()
+
 	q := `
         UPDATE projects
         SET name = $1
@@ -73,6 +79,9 @@ func (s DB) UpdateProject(ctx context.Context, project_id int, project models.Pr
 }
 
 func (s DB) DeleteProject(ctx context.Context, project_id int) error {
+	ctx, span := tracer.Start(ctx, "storage/DeleteProject")
+	defer span.End()
+
 	q := `
         DELETE FROM projects
         WHERE id = $1
@@ -83,6 +92,9 @@ func (s DB) DeleteProject(ctx context.Context, project_id int) error {
 }
 
 func (s DB) CreateGraph(ctx context.Context, graph models.Graph) (models.Graph, error) {
+	ctx, span := tracer.Start(ctx, "storage/CreateGraph")
+	defer span.End()
+
 	q := `
 		INSERT INTO graphs (project_id, name) VALUES ($1, $2) RETURNING id
 	`
@@ -93,6 +105,9 @@ func (s DB) CreateGraph(ctx context.Context, graph models.Graph) (models.Graph, 
 }
 
 func (s DB) DeleteGraph(ctx context.Context, graph_id int) error {
+	ctx, span := tracer.Start(ctx, "storage/DeleteGraph")
+	defer span.End()
+
 	q := `
 		DELETE FROM graphs WHERE id = $1
 	`
@@ -101,6 +116,9 @@ func (s DB) DeleteGraph(ctx context.Context, graph_id int) error {
 }
 
 func (s DB) UpdateGraphServices(ctx context.Context, graph_id int, services []models.Service) error {
+	ctx, span := tracer.Start(ctx, "storage/UpdateGraphServices")
+	defer span.End()
+
 	for _, service := range services {
 		service.GraphID = graph_id
 		err := s.UpdateService(ctx, service.ID, service)
@@ -112,6 +130,9 @@ func (s DB) UpdateGraphServices(ctx context.Context, graph_id int, services []mo
 }
 
 func (s DB) UpdateGraphRelations(ctx context.Context, graph_id int, relations []models.Relation) error {
+	ctx, span := tracer.Start(ctx, "storage/UpdateGraphRelations")
+	defer span.End()
+
 	for _, relation := range relations {
 		relation.GraphID = graph_id
 		err := s.UpdateRelation(ctx, relation.ID, relation)
@@ -123,6 +144,9 @@ func (s DB) UpdateGraphRelations(ctx context.Context, graph_id int, relations []
 }
 
 func (s DB) UpdateGraph(ctx context.Context, graph_id int, graph models.Graph) error {
+	ctx, span := tracer.Start(ctx, "storage/UpdateGraph")
+	defer span.End()
+
 	q := `
 		UPDATE graphs
         SET project_id = $1, name = $2
@@ -133,6 +157,9 @@ func (s DB) UpdateGraph(ctx context.Context, graph_id int, graph models.Graph) e
 }
 
 func (s DB) GetProjectGraphs(ctx context.Context, project_id int) ([]models.Graph, error) {
+	ctx, span := tracer.Start(ctx, "storage/GetProjectGraphs")
+	defer span.End()
+
 	q := `
 		SELECT
 			id,
@@ -153,6 +180,9 @@ func (s DB) GetProjectGraphs(ctx context.Context, project_id int) ([]models.Grap
 }
 
 func (s DB) GetService(ctx context.Context, service_id int) (models.Service, error) {
+	ctx, span := tracer.Start(ctx, "storage/GetService")
+	defer span.End()
+
 	q := `
 		SELECT id, graph_id, name, description, X, Y FROM services WHERE id = $1
 	`
@@ -165,7 +195,11 @@ func (s DB) GetService(ctx context.Context, service_id int) (models.Service, err
 	}
 	return service, nil
 }
+
 func (s DB) GetGraphServices(ctx context.Context, graph_id int) ([]models.Service, error) {
+	ctx, span := tracer.Start(ctx, "storage/GetGraphServices")
+	defer span.End()
+
 	q := `
 		SELECT
 			id,
@@ -189,6 +223,9 @@ func (s DB) GetGraphServices(ctx context.Context, graph_id int) ([]models.Servic
 }
 
 func (s DB) UpdateService(ctx context.Context, service_id int, service models.Service) error {
+	ctx, span := tracer.Start(ctx, "storage/UpdateService")
+	defer span.End()
+
 	q := `
 		UPDATE services
         SET graph_id = $1, name = $2, description = $3, x = $4, y = $5
@@ -199,6 +236,9 @@ func (s DB) UpdateService(ctx context.Context, service_id int, service models.Se
 }
 
 func (s DB) DeleteService(ctx context.Context, service_id int) error {
+	ctx, span := tracer.Start(ctx, "storage/DeleteService")
+	defer span.End()
+
 	q := `
 		DELETE FROM services WHERE id = $1
 	`
@@ -207,6 +247,9 @@ func (s DB) DeleteService(ctx context.Context, service_id int) error {
 }
 
 func (s DB) CreateService(ctx context.Context, service models.Service) (models.Service, error) {
+	ctx, span := tracer.Start(ctx, "storage/CreateService")
+	defer span.End()
+
 	q := `
 		INSERT INTO services (graph_id, name, description, x, y) VALUES ($1, $2, $3, $4, $5) RETURNING id
 	`
@@ -217,6 +260,9 @@ func (s DB) CreateService(ctx context.Context, service models.Service) (models.S
 }
 
 func (s DB) CreateServices(ctx context.Context, graph_id int, services []models.Service) ([]int, error) {
+	ctx, span := tracer.Start(ctx, "storage/CreateServices")
+	defer span.End()
+
 	var res []int
 	for _, service := range services {
 		service.GraphID = graph_id
@@ -230,6 +276,9 @@ func (s DB) CreateServices(ctx context.Context, graph_id int, services []models.
 }
 
 func (s DB) GetRelation(ctx context.Context, relation_id int) (models.Relation, error) {
+	ctx, span := tracer.Start(ctx, "storage/GetRelation")
+	defer span.End()
+
 	q := `
 		SELECT id, graph_id, name, description, from_service, to_service FROM relations WHERE id = $1
 	`
@@ -244,6 +293,9 @@ func (s DB) GetRelation(ctx context.Context, relation_id int) (models.Relation, 
 }
 
 func (s DB) GetGraphRelations(ctx context.Context, graph_id int) ([]models.Relation, error) {
+	ctx, span := tracer.Start(ctx, "storage/GetGraphRelations")
+	defer span.End()
+
 	q := `
 		SELECT
 			id,
@@ -267,6 +319,9 @@ func (s DB) GetGraphRelations(ctx context.Context, graph_id int) ([]models.Relat
 }
 
 func (s DB) CreateRelation(ctx context.Context, relation models.Relation) (models.Relation, error) {
+	ctx, span := tracer.Start(ctx, "storage/CreateRelation")
+	defer span.End()
+
 	q := `
 		INSERT INTO relations (graph_id, name, description, from_service, to_service) VALUES ($1, $2, $3, $4, $5) RETURNING id
 	`
@@ -277,6 +332,9 @@ func (s DB) CreateRelation(ctx context.Context, relation models.Relation) (model
 }
 
 func (s DB) CreateRelations(ctx context.Context, graph_id int, relations []models.Relation) error {
+	ctx, span := tracer.Start(ctx, "storage/CreateRelations")
+	defer span.End()
+
 	for _, relation := range relations {
 		relation.GraphID = graph_id
 		_, err := s.CreateRelation(ctx, relation)
@@ -288,6 +346,9 @@ func (s DB) CreateRelations(ctx context.Context, graph_id int, relations []model
 }
 
 func (s DB) UpdateRelation(ctx context.Context, relation_id int, relation models.Relation) error {
+	ctx, span := tracer.Start(ctx, "storage/UpdateRelation")
+	defer span.End()
+
 	q := `
 		UPDATE relations
 		SET graph_id = $1, name = $2, description = $3, from_service = $4, to_service = $5
@@ -298,6 +359,9 @@ func (s DB) UpdateRelation(ctx context.Context, relation_id int, relation models
 }
 
 func (s DB) DeleteRelation(ctx context.Context, relation_id int) error {
+	ctx, span := tracer.Start(ctx, "storage/DeleteRelation")
+	defer span.End()
+
 	q := `
 		DELETE FROM relations WHERE id = $1
 	`

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/hse-telescope/core/internal/repository/models"
+	"github.com/hse-telescope/tracer"
 	"github.com/olegdayo/omniconv"
 )
 
@@ -28,6 +29,9 @@ func New(repository Repository) Provider {
 }
 
 func (p Provider) GetRelation(ctx context.Context, relation_id int) (Relation, error) {
+	ctx, span := tracer.Start(ctx, "storage/GetRelation")
+	defer span.End()
+
 	relation, err := p.repository.GetRelation(ctx, relation_id)
 	if err != nil {
 		return Relation{}, err
@@ -36,6 +40,9 @@ func (p Provider) GetRelation(ctx context.Context, relation_id int) (Relation, e
 }
 
 func (p Provider) GetGraphRelations(ctx context.Context, graph_id int) ([]Relation, error) {
+	ctx, span := tracer.Start(ctx, "storage/GetGraphRelations")
+	defer span.End()
+
 	relations, err := p.repository.GetGraphRelations(ctx, graph_id)
 	if err != nil {
 		return nil, err
@@ -44,26 +51,41 @@ func (p Provider) GetGraphRelations(ctx context.Context, graph_id int) ([]Relati
 }
 
 func (p Provider) CreateRelation(ctx context.Context, relation Relation) (Relation, error) {
+	ctx, span := tracer.Start(ctx, "storage/CreateRelation")
+	defer span.End()
+
 	newrelation, err := p.repository.CreateRelation(ctx, ProviderRelation2DBRelation(relation))
 	return DBRelation2ProviderRelation(newrelation), err
 }
 
 func (p Provider) CreateRelations(ctx context.Context, graph_id int, relations []Relation) error {
+	ctx, span := tracer.Start(ctx, "storage/CreateRelations")
+	defer span.End()
+
 	err := p.repository.CreateRelations(ctx, graph_id, omniconv.ConvertSlice(relations, ProviderRelation2DBRelation))
 	return err
 }
 
 func (p Provider) UpdateRelation(ctx context.Context, relation_id int, relation Relation) error {
+	ctx, span := tracer.Start(ctx, "storage/UpdateRelation")
+	defer span.End()
+
 	err := p.repository.UpdateRelation(ctx, relation_id, ProviderRelation2DBRelation(relation))
 	return err
 }
 
 func (p Provider) UpdateGraphRelations(ctx context.Context, graph_id int, relations []Relation) error {
+	ctx, span := tracer.Start(ctx, "storage/UpdateGraphRelations")
+	defer span.End()
+
 	err := p.repository.UpdateGraphRelations(ctx, graph_id, omniconv.ConvertSlice(relations, ProviderRelation2DBRelation))
 	return err
 }
 
 func (p Provider) DeleteRelation(ctx context.Context, relation_id int) error {
+	ctx, span := tracer.Start(ctx, "storage/DeleteRelation")
+	defer span.End()
+
 	err := p.repository.DeleteRelation(ctx, relation_id)
 	return err
 }
