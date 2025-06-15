@@ -25,7 +25,7 @@ require (
 
 require (
 	github.com/hse-telescope/logger v0.0.0-20250615163628-0408d63d601d
-	github.com/hse-telescope/tracer v0.0.0-20250615192856-1d375fc41ed1
+	github.com/hse-telescope/tracer v0.0.0-20250615205050-2e1e3bfd1558
 	github.com/prometheus/client_golang v1.22.0
 )
 
