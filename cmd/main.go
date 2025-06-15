@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"os"
 
 	"github.com/hse-telescope/core/internal/config"
@@ -11,6 +12,8 @@ import (
 	"github.com/hse-telescope/core/internal/repository/db"
 	"github.com/hse-telescope/core/internal/repository/facade"
 	"github.com/hse-telescope/core/internal/server"
+	"github.com/hse-telescope/logger"
+	"github.com/hse-telescope/tracer"
 )
 
 func main() {
@@ -23,6 +26,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	logger.SetupLogger(context.Background(), "core", conf.OTELCollectorURL, conf.Logger)
+	tracer.SetupTracer(context.Background(), "core", conf.OTELCollectorURL)
 
 	facade := facade.New(storage)
 

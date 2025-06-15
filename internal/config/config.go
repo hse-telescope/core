@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 
+	"github.com/hse-telescope/logger"
 	"github.com/hse-telescope/utils/db/psql"
 	"gopkg.in/yaml.v3"
 )
@@ -11,9 +12,11 @@ type Clients struct{}
 
 // Config ...
 type Config struct {
-	Port    uint16  `yaml:"port"`
-	DB      psql.DB `yaml:"db"`
-	Clients Clients `yaml:"clients"`
+	Port             uint16        `yaml:"port"`
+	DB               psql.DB       `yaml:"db"`
+	Clients          Clients       `yaml:"clients"`
+	Logger           logger.Config `yaml:"logger"`
+	OTELCollectorURL string        `yaml:"otel_collector_url"`
 }
 
 // Parse ...
